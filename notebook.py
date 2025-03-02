@@ -411,24 +411,8 @@ if __name__ == "__main__":
 
     print(f"\nBest model: {best_model_name} with {best_strategy}, F1 Score: {best_f1:.4f}")
     
-    # Save the best model
-    from skl2onnx import convert_sklearn
-    from skl2onnx.common.data_types import FloatTensorType  
-    # Assuming you have trained the best model using your pipeline or strategy
-    best_model = models[f"{best_strategy}_{best_model_name}"]   
-    # Define the feature names and expected input type
-    # You should specify your feature columns here to match what the model expects
-    print("Best model features:", best_model)
-    initial_types = [('Temperature (°C)', FloatTensorType([None, 1])),
-                      ('Humidity (%)', FloatTensorType([None, 1])),
-                      ( 'Precipitation (mm)', FloatTensorType([None, 1])),
-                        ( 'Soil Moisture (%)', FloatTensorType([None, 1])),
-                        ('Elevation (m)', FloatTensorType([None, 1])),
-                    ('input', FloatTensorType([None, best_model.n_features_in_]))]  
-    # Convert the model to ONNX format
-    onnx_model = convert_sklearn(best_model, 
-                                initial_types=initial_types)    
-    # Save the ONNX model to a file
-    with open('best_landslide_model.onnx', 'wb') as f:
-        f.write(onnx_model.SerializeToString()) 
-    print("Best model saved as 'best_landslide_model.onnx'")    
+    import joblib
+    # Save best model
+    best_model = models[f"{best_strategy}_{best_model_name}"]
+    joblib.dump(best_model, "best_landslide_model.pkl")
+    print("Best model saved as best_landslide_model.pkl") 
